@@ -4,6 +4,7 @@ import com.security.springsecurity.config.CustomUserDetailsService;
 import com.security.springsecurity.config.JwtUtil;
 import com.security.springsecurity.model.AuthenticationRequest;
 import com.security.springsecurity.model.AuthenticationResponse;
+import com.security.springsecurity.model.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,7 +12,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthenticationController {
@@ -26,22 +29,24 @@ public class AuthenticationController {
     private JwtUtil jwtUtil;
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthenticateToken (@RequestBody AuthenticationRequest authenticationRequest) throws  Exception{
-
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
+            throws Exception {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
-                    (authenticationRequest.getUsername(),authenticationRequest.getPassword()));
-        } catch (DisabledException e){
-            throw new Exception("USER_DISABLE", e);
-        }catch (BadCredentialsException e){
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
 
-        //final
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        //final
-        String token = jwtUtil.generateToken(userDetails);
-
+        UserDetails userdetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        String token = jwtUtil.generateToken(userdetails);
         return ResponseEntity.ok(new AuthenticationResponse(token));
+    }
+
+    @PostMapping(value = "/register")
+    public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
+        return ResponseEntity.ok(userDetailsService.save(user));
     }
 }

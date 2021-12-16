@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    final
+    @Autowired
     CustomUserDetailsService userDetailsService;
 
     @Autowired
@@ -25,10 +25,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
-
-    public SpringSecurityConfiguration(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -53,7 +49,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/helloadmin").hasRole("ADMIN")
                 .antMatchers("/hellouser").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/authenticate").permitAll().anyRequest().authenticated()
+                .antMatchers("/authenticate", "/register").permitAll().anyRequest().authenticated()
                 //if any exception occurs call this
                 .and().exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler).and().
@@ -61,7 +57,6 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // store user's state.
                         sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(customJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
