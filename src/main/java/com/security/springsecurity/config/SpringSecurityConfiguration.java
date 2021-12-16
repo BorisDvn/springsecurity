@@ -1,5 +1,6 @@
 package com.security.springsecurity.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,8 +8,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -16,6 +19,12 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     final
     CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private CustomJwtAuthenticationFilter customJwtAuthenticationFilter;
+
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
 
     public SpringSecurityConfiguration(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -45,7 +54,16 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/helloadmin").hasRole("ADMIN")
                 .antMatchers("/hellouser").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/authenticate").permitAll().anyRequest().authenticated()
-                .and().httpBasic();
+                //if any exception occurs call this
+                .and().exceptionHandling()
+                .authenticationEntryPoint(unauthorizedHandler).and().
+                // make sure we use stateless session; session won't be used to
+                // store user's state.
+                        sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        // Add a filter to validate the tokens with every request
+        httpSecurity.addFilterBefore(customJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 
