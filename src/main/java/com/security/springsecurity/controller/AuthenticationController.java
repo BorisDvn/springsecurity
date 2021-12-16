@@ -1,6 +1,6 @@
 package com.security.springsecurity.controller;
 
-import com.security.springsecurity.config.CustomUserDetailsService;
+import com.security.springsecurity.service.CustomUserDetailsService;
 import com.security.springsecurity.config.JwtUtil;
 import com.security.springsecurity.model.AuthenticationRequest;
 import com.security.springsecurity.model.AuthenticationResponse;
@@ -32,6 +32,7 @@ public class AuthenticationController {
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
             throws Exception {
         try {
+            // authenticate the user
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     authenticationRequest.getUsername(), authenticationRequest.getPassword()));
         } catch (DisabledException e) {

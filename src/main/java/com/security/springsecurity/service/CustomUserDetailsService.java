@@ -1,4 +1,4 @@
-package com.security.springsecurity.config;
+package com.security.springsecurity.service;
 
 import com.security.springsecurity.model.DAOUser;
 import com.security.springsecurity.model.UserDTO;
@@ -28,13 +28,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         List<SimpleGrantedAuthority> roles = null;
 
-
         DAOUser user = userRepository.findByUsername(username);
         if (user != null) {
             roles = Arrays.asList(new SimpleGrantedAuthority(user.getRole()));
             return new User(user.getUsername(), user.getPassword(), roles);
         }
-        throw new UsernameNotFoundException("User not found with the name " + username);	}
+        throw new UsernameNotFoundException("User not found with the name " + username);
+    }
 
     public DAOUser save(UserDTO user) {
         DAOUser newUser = new DAOUser();

@@ -38,7 +38,7 @@ public class JwtUtil {
         }
 
         // Generate Token
-        return Jwts.builder().setClaims(claims)
+        return Jwts.builder().setClaims(claims).setSubject(userDetails.getPassword()) // try add pwd to token
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
@@ -56,7 +56,6 @@ public class JwtUtil {
             throw new BadCredentialsException("INVALID_CREDENTIALS", ex);
         } catch (ExpiredJwtException ex) {
             throw ex;
-            //throw ex(header, claims, "Token has Expired", ex);
         }
     }
 
@@ -78,12 +77,5 @@ public class JwtUtil {
         }
         return roles;
     }
-
-    /*private String doGenerateToken(Map<String, Object> claims, String subject) {
-        return Jwts.builder().setClaims(claims).setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
-                .signWith(SignatureAlgorithm.HS512, secret).compact();
-    }*/
 
 }

@@ -30,7 +30,8 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
             // JWT Token is in the form "Bearer token". Remove Bearer word and
             // get  only the Token
             String jwtToken = extractJwtFromRequest(request);
-
+            // request without token
+            System.out.println("request without token");
             if (StringUtils.hasText(jwtToken) && jwtTokenUtil.validateToken(jwtToken)) {
                 //and pass??
                 UserDetails userDetails = new User(jwtTokenUtil.getUsernameFromToken(jwtToken), "",
