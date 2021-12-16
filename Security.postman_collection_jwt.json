@@ -1,0 +1,105 @@
+{
+	"info": {
+		"_postman_id": "8eb44a83-d74b-434d-a073-f849f129543d",
+		"name": "Security",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Standard",
+			"item": [
+				{
+					"name": "Hello User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlzQWRtaW4iOnRydWUsImV4cCI6MTYzOTY0NjE1OCwiaWF0IjoxNjM5NjQ2MDU4fQ.ezBPxVGn9T08StsDXiYxseApZKsghKq3V74K0lbvkO74GNpW4_cgrPl73TPOzVr2Mk88BnNbPmr7NXc2_sqkFA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/hellouser",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"hellouser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Hello Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlzQWRtaW4iOnRydWUsImV4cCI6MTYzOTY0NjE1OCwiaWF0IjoxNjM5NjQ2MDU4fQ.ezBPxVGn9T08StsDXiYxseApZKsghKq3V74K0lbvkO74GNpW4_cgrPl73TPOzVr2Mk88BnNbPmr7NXc2_sqkFA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/helloadmin",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"helloadmin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "jwt",
+			"item": [
+				{
+					"name": "Authentication",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/authenticate",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
