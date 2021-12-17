@@ -31,9 +31,7 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
             // get  only the Token
             String jwtToken = extractJwtFromRequest(request);
             // request without token
-            System.out.println("request without token");
             if (StringUtils.hasText(jwtToken) && jwtTokenUtil.validateToken(jwtToken)) {
-                //and pass??
                 UserDetails userDetails = new User(jwtTokenUtil.getUsernameFromToken(jwtToken), "",
                         jwtTokenUtil.getRolesFromToken(jwtToken));
 
@@ -44,12 +42,9 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
                 // Spring Security Configurations successfully.
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             } else {
-                System.out.println("Cannot set the Security Context");
+                System.out.println("request without token - Cannot set the Security Context");
             }
-        } catch (ExpiredJwtException ex) {
-            request.setAttribute("exception", ex);
-            throw ex;
-        } catch (BadCredentialsException ex) {
+        } catch (ExpiredJwtException | BadCredentialsException ex) {
             request.setAttribute("exception", ex);
             throw ex;
         }
@@ -65,3 +60,7 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
 }
+/*Create the CustomJwtAuthenticationFilter class will be type of OncePerRequestFilter.
+This class will intercept the requests and
+Check if header contains a JWT
+*/

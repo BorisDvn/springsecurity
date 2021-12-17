@@ -31,7 +31,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             byte[] body = new ObjectMapper().writeValueAsBytes(Collections.singletonMap("cause", exception.toString()));
             response.getOutputStream().write(body);
         } else {
-
             if (authException.getCause() != null) {
                 message = authException.getCause().toString() + " " + authException.getMessage();
             } else {
@@ -44,3 +43,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         }
     }
 }
+/*This class is used to return a 401 unauthorized error to clients that try to access a protected
+resource without proper authentication.
+It implements Spring Security AuthenticationEntryPoint interface.
+In this class we will be creating the HttpResponse which should be returned to the user in case of an exception.*/

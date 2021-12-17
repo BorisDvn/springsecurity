@@ -43,11 +43,12 @@ public class AuthenticationController {
 
         UserDetails userdetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         String token = jwtUtil.generateToken(userdetails);
-        return ResponseEntity.ok(new AuthenticationResponse(token,authenticationRequest.getUsername()));
+        return ResponseEntity.ok(new AuthenticationResponse(authenticationRequest.getUsername(),token));
     }
 
     @PostMapping(value = "/register")
     public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
-        return ResponseEntity.ok(userDetailsService.save(user));
+        userDetailsService.save(user);
+        return ResponseEntity.ok("REGISTRATION SUCCESSFUL");
     }
 }

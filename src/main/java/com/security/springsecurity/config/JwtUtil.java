@@ -38,7 +38,7 @@ public class JwtUtil {
         }
 
         // Generate Token
-        return Jwts.builder().setClaims(claims).setSubject(userDetails.getPassword()) // try add pwd to token
+        return Jwts.builder().setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
