@@ -50,7 +50,8 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/helloadmin").hasRole("ADMIN")
                 .antMatchers("/hellouser").hasAnyRole("ADMIN", "USER")
-                .antMatchers("/authenticate", "/register").permitAll().anyRequest().authenticated()
+                .antMatchers("/authenticate", "/register").permitAll()
+                .anyRequest().authenticated()
                 //if any exception occurs call this
                 .and().exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler).and().
@@ -61,6 +62,4 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(customJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
-
 }

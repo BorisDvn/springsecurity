@@ -10,4 +10,8 @@ import lombok.NoArgsConstructor;
 public class AuthenticationResponse {
     private String username;
     private String token;
+
+    public AuthenticationResponse(String token) {
+        this.token = token;
+    }
 }

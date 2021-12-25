@@ -1,6 +1,7 @@
-package com.security.springsecurity.config;
+package com.security.springsecurity.service;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +16,7 @@ public class JwtUtil {
 
     private String secret;
     private int jwtExpirationInMs;
+    private int refreshExpirationDateInMs;
 
     @Value("${jwt.secret}")
     public void setSecret(String secret) {
@@ -24,6 +26,11 @@ public class JwtUtil {
     @Value("${jwt.jwtExpirationInMs}")
     public void setJwtExpirationInMs(int jwtExpirationInMs) {
         this.jwtExpirationInMs = jwtExpirationInMs;
+    }
+
+    @Value("${jwt.refreshExpirationDateInMs}")
+    public void setRefreshExpirationDateInMs(int refreshExpirationDateInMs) {
+        this.refreshExpirationDateInMs = refreshExpirationDateInMs;
     }
 
     // generate token for user
@@ -64,6 +71,15 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
+    public String doGenerateRefreshToken(DefaultClaims claims) {
+        Map<String, Object> expectedMap = getMapFromIoJsonwebtokenClaims(claims);
+        String subject = expectedMap.get("sub").toString();
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationDateInMs))
+                .signWith(SignatureAlgorithm.HS512, secret).compact();
+
+    }
+
     public List<SimpleGrantedAuthority> getRolesFromToken(String authToken) {
         List<SimpleGrantedAuthority> roles = null;
         Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(authToken).getBody();
@@ -76,6 +92,14 @@ public class JwtUtil {
             roles = Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
         }
         return roles;
+    }
+
+    public Map<String, Object> getMapFromIoJsonwebtokenClaims(DefaultClaims claims) {
+        Map<String, Object> expectedMap = new HashMap<String, Object>();
+        for (Map.Entry<String, Object> entry : claims.entrySet()) {
+            expectedMap.put(entry.getKey(), entry.getValue());
+        }
+        return expectedMap;
     }
 
 }

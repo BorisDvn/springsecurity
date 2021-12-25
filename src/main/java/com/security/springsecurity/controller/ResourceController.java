@@ -1,16 +1,16 @@
 package com.security.springsecurity.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ResourceController {
-    @RequestMapping({"/hellouser"})
+    @GetMapping({"/hellouser"})
     public String helloUser() {
         return "Hello User";
     }
 
-    @RequestMapping({"/helloadmin"})
+    @GetMapping({"/helloadmin"})
     public String helloAdmin() {
         return "Hello Admin";
     }
