@@ -18,4 +18,6 @@ public class DAOUser {
     private String password;
     @Column
     private String role;
+    @Column
+    private String email;
 }
