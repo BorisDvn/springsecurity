@@ -1,8 +1,8 @@
 package com.security.springsecurity.controller;
 
-import com.security.springsecurity.model.AuthenticationRequest;
-import com.security.springsecurity.model.AuthenticationResponse;
-import com.security.springsecurity.model.UserDTO;
+import com.security.springsecurity.dto.AuthenticationRequest;
+import com.security.springsecurity.dto.AuthenticationResponse;
+import com.security.springsecurity.dto.UserDTO;
 import com.security.springsecurity.service.CustomUserDetailsService;
 import com.security.springsecurity.service.JwtUtil;
 import io.jsonwebtoken.impl.DefaultClaims;
@@ -38,16 +38,16 @@ public class AuthenticationController {
         try {
             // authenticate the user
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+                    authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         } catch (DisabledException e) {
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
 
-        UserDetails userdetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        UserDetails userdetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
         String token = jwtUtil.generateToken(userdetails);
-        return ResponseEntity.ok(new AuthenticationResponse(authenticationRequest.getUsername(), token));
+        return ResponseEntity.ok(new AuthenticationResponse(authenticationRequest.getEmail(), token));
     }
 
     @PostMapping(value = "/register")

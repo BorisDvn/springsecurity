@@ -1,7 +1,7 @@
 package com.security.springsecurity.service;
 
 import com.security.springsecurity.model.DAOUser;
-import com.security.springsecurity.model.UserDTO;
+import com.security.springsecurity.dto.UserDTO;
 import com.security.springsecurity.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,21 +25,23 @@ public class CustomUserDetailsService implements UserDetailsService {
     private PasswordEncoder bcryptEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    //loadUserByEmail
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         List<SimpleGrantedAuthority> roles = null;
 
-        DAOUser user = userRepository.findByUsername(username);
+        DAOUser user = userRepository.findDAOUserByEmail(email);
         if (user != null) {
             roles = Arrays.asList(new SimpleGrantedAuthority(user.getRole()));
-            return new User(user.getUsername(), user.getPassword(), roles);
+            return new User(user.getEmail(), user.getPassword(), roles);
         }
-        throw new UsernameNotFoundException("User not found with the name " + username);
+        throw new UsernameNotFoundException("User not found with the email " + email);
     }
 
     public DAOUser save(UserDTO user) {
         DAOUser newUser = new DAOUser();
         newUser.setUsername(user.getUsername());
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
+        newUser.setEmail(user.getEmail());
         newUser.setRole(user.getRole());
         return userRepository.save(newUser);
     }
